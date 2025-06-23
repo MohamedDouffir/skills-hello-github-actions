@@ -1,0 +1,48 @@
+name: Two Independent Jobs
+
+on:
+  workflow_dispatch:
+    inputs:
+      TARGETTASKNAME:
+        description: 'Which job to run manually (job1 or job2)'
+        required: true
+  schedule:
+    - cron: '06 21 * * *'     # Schedule for job1 (8:45 PM UTC)
+    - cron: '07 21 * * *'     # Schedule for job2 (6:30 PM UTC)
+
+jobs:
+  job1:
+    if: github.event_name == 'schedule' && github.event.schedule == '06 21 * * *' || github.event_name == 'workflow_dispatch' && github.event.inputs.TARGETTASKNAME == 'job1'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo Job 1
+        run: |
+          echo "Running Job 1"
+          if [ -z "${{ github.event.schedule }}" ]; then
+            echo "github.event.schedule is empty"
+          else
+            echo "github.event.schedule: ${{ github.event.schedule }}"
+          fi
+
+      - name: Show current time in cron format
+        run: |
+          echo "Current UTC time (human-readable): $(date -u)"
+          MIN=$(date -u +'%M')
+          HOUR=$(date -u +'%H')
+          echo "Current time in cron format: $MIN $HOUR * * *"
+
+  job2:
+    if: github.event_name == 'schedule' && github.event.schedule == '07 21 * * *' || github.event_name == 'workflow_dispatch' && github.event.inputs.TARGETTASKNAME == 'job2'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo Job 2
+        run: |
+          echo "Running Job 2"
+          echo "Scheduled time: ${{ github.event.schedule }}"
+
+      - name: Show current time in cron format
+        run: |
+          echo "Current UTC time (human-readable): $(date -u)"
+          MIN=$(date -u +'%M')
+          HOUR=$(date -u +'%H')
+          echo "Current time in cron format: $MIN $HOUR * * *"
