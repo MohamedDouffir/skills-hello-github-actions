@@ -7,12 +7,12 @@ on:
         description: 'Which job to run manually (job1 or job2)'
         required: true
   schedule:
-    - cron: '06 21 * * *'     # Schedule for job1 (8:45 PM UTC)
-    - cron: '07 21 * * *'     # Schedule for job2 (6:30 PM UTC)
+    - cron: '36 22 * * *'     # Schedule for job1 (8:45 PM UTC)
+    - cron: '38 22 * * *'     # Schedule for job2 (6:30 PM UTC)
 
 jobs:
   job1:
-    if: github.event_name == 'schedule' && github.event.schedule == '06 21 * * *' || github.event_name == 'workflow_dispatch' && github.event.inputs.TARGETTASKNAME == 'job1'
+    if: github.event_name == 'schedule' && github.event.schedule == '36 22 * * *' || github.event_name == 'workflow_dispatch' && github.event.inputs.TARGETTASKNAME == 'job1'
     runs-on: ubuntu-latest
     steps:
       - name: Echo Job 1
@@ -32,7 +32,7 @@ jobs:
           echo "Current time in cron format: $MIN $HOUR * * *"
 
   job2:
-    if: github.event_name == 'schedule' && github.event.schedule == '07 21 * * *' || github.event_name == 'workflow_dispatch' && github.event.inputs.TARGETTASKNAME == 'job2'
+    if: github.event_name == 'schedule' && github.event.schedule == '38 22 * * *' || github.event_name == 'workflow_dispatch' && github.event.inputs.TARGETTASKNAME == 'job2'
     runs-on: ubuntu-latest
     steps:
       - name: Echo Job 2
