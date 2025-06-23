@@ -7,42 +7,20 @@ on:
         description: 'Which job to run manually (job1 or job2)'
         required: true
   schedule:
-    - cron: '36 22 * * *'     # Schedule for job1 (8:45 PM UTC)
-    - cron: '38 22 * * *'     # Schedule for job2 (6:30 PM UTC)
+    - cron: '46 22 * * *'     # job1
+    - cron: '48 22 * * *'     # job2
 
 jobs:
   job1:
-    if: github.event_name == 'schedule' && github.event.schedule == '36 22 * * *' || github.event_name == 'workflow_dispatch' && github.event.inputs.TARGETTASKNAME == 'job1'
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.TARGETTASKNAME == 'job1' || github.event_name == 'schedule'
     runs-on: ubuntu-latest
     steps:
       - name: Echo Job 1
-        run: |
-          echo "Running Job 1"
-          if [ -z "${{ github.event.schedule }}" ]; then
-            echo "github.event.schedule is empty"
-          else
-            echo "github.event.schedule: ${{ github.event.schedule }}"
-          fi
-
-      - name: Show current time in cron format
-        run: |
-          echo "Current UTC time (human-readable): $(date -u)"
-          MIN=$(date -u +'%M')
-          HOUR=$(date -u +'%H')
-          echo "Current time in cron format: $MIN $HOUR * * *"
+        run: echo "Running Job 1"
 
   job2:
-    if: github.event_name == 'schedule' && github.event.schedule == '38 22 * * *' || github.event_name == 'workflow_dispatch' && github.event.inputs.TARGETTASKNAME == 'job2'
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.TARGETTASKNAME == 'job2' || github.event_name == 'schedule'
     runs-on: ubuntu-latest
     steps:
       - name: Echo Job 2
-        run: |
-          echo "Running Job 2"
-          echo "Scheduled time: ${{ github.event.schedule }}"
-
-      - name: Show current time in cron format
-        run: |
-          echo "Current UTC time (human-readable): $(date -u)"
-          MIN=$(date -u +'%M')
-          HOUR=$(date -u +'%H')
-          echo "Current time in cron format: $MIN $HOUR * * *"
+        run: echo "Running Job 2"
