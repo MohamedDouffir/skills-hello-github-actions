@@ -2,7 +2,7 @@ name: Job 1 Only
 
 on:
   schedule:
-    - cron: '0 2 * * *'
+    - cron: '04 1 * * *'
   workflow_dispatch:
     inputs:
       TARGETTASKNAME:
