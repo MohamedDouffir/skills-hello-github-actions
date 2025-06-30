@@ -1,47 +1,46 @@
-name: Job Running Every Minute
+name: Scheduled Job wihin range Upper-Lower
 
 on:
   schedule:
     - cron: '* * * * *'  # Runs every minute
-  workflow_dispatch:     # Allows manual trigger
+  workflow_dispatch:      # Allows manual trigger
 
 env:
-  JOB_1_START_TIME: "30 21 * * *"
-  JOB_2_START_TIME: "31 21 * * *"
+  LOWER_LIMIT: "00 23 * * *"
+  UPPER_LIMIT: "30 23 * * *"
 
 jobs:
-  job1:
+  conditional-job:
     runs-on: ubuntu-latest
     steps:
-      - name: Check if it's time to run Job 1
+      - name: Check if current time is within bounds
         id: check_time
         run: |
-          CURRENT_TIME=$(date -u +"%M %H * * *")
-          echo "Current time: $CURRENT_TIME"
-          if [ "$CURRENT_TIME" = "${{ env.JOB_1_START_TIME }}" ]; then
+          # Extract hour and minute from cron expressions
+          lower_minute=$(echo "${{ env.LOWER_LIMIT }}" | awk '{print $1}')
+          lower_hour=$(echo "${{ env.LOWER_LIMIT }}" | awk '{print $2}')
+          upper_minute=$(echo "${{ env.UPPER_LIMIT }}" | awk '{print $1}')
+          upper_hour=$(echo "${{ env.UPPER_LIMIT }}" | awk '{print $2}')
+
+          # Convert to minutes since midnight
+          lower_total=$((10#$lower_hour * 60 + 10#$lower_minute))
+          upper_total=$((10#$upper_hour * 60 + 10#$upper_minute))
+
+          # Get current UTC time in minutes since midnight
+          current_hour=$(date -u +"%H")
+          current_minute=$(date -u +"%M")
+          current_total=$((10#$current_hour * 60 + 10#$current_minute))
+
+          echo "Current time: $current_hour:$current_minute UTC"
+          echo "Lower bound: $lower_hour:$lower_minute"
+          echo "Upper bound: $upper_hour:$upper_minute"
+
+          if [ "$current_total" -ge "$lower_total" ] && [ "$current_total" -le "$upper_total" ]; then
             echo "Run=1" >> $GITHUB_OUTPUT
           else
             echo "Run=0" >> $GITHUB_OUTPUT
           fi
 
-      - name: Run Job 1
+      - name: Run the job
         if: steps.check_time.outputs.Run == '1'
-        run: echo "Running Job 1 tasks..."
-
-  job2:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check if it's time to run Job 2
-        id: check_time
-        run: |
-          CURRENT_TIME=$(date -u +"%M %H * * *")
-          echo "Current time: $CURRENT_TIME"
-          if [ "$CURRENT_TIME" = "${{ env.JOB_2_START_TIME }}" ]; then
-            echo "Run=1" >> $GITHUB_OUTPUT
-          else
-            echo "Run=0" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Run Job 2
-        if: steps.check_time.outputs.Run == '1'
-        run: echo "Running Job 2 tasks..."
+        run: echo "✅ Running job within time bounds!"
