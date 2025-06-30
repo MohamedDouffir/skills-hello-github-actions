@@ -1,4 +1,4 @@
-name: Scheduled Jobs
+name: Job Running Every Minute
 
 on:
   schedule:
