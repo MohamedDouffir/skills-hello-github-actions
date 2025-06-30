@@ -1,25 +1,47 @@
-name: Job 1 Only
+name: Scheduled Jobs
 
 on:
   schedule:
-    - cron: '0 1 * * *'
-  workflow_dispatch:
-    inputs:
-      TARGETTASKNAME:
-        description: 'Run job1 manually'
-        required: true
+    - cron: '* * * * *'  # Runs every minute
+  workflow_dispatch:     # Allows manual trigger
+
+env:
+  JOB_1_START_TIME: "15 21 * * *"
+  JOB_2_START_TIME: "16 21 * * *"
 
 jobs:
   job1:
-    if: github.event_name == 'schedule' || github.event.inputs.TARGETTASKNAME == 'job1'
     runs-on: ubuntu-latest
     steps:
-      - name: Echo Job 1
-        run: echo "Running Job 1"
-
-      - name: Show current time
+      - name: Check if it's time to run Job 1
+        id: check_time
         run: |
-          echo "Current UTC time (human-readable): $(date -u)"
-          MIN=$(date -u +'%M')
-          HOUR=$(date -u +'%H')
-          echo "Current time in cron format: $MIN $HOUR * * *"
+          CURRENT_TIME=$(date -u +"%M %H * * *")
+          echo "Current time: $CURRENT_TIME"
+          if [ "$CURRENT_TIME" = "${{ env.JOB_1_START_TIME }}" ]; then
+            echo "Run=1" >> $GITHUB_OUTPUT
+          else
+            echo "Run=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run Job 1
+        if: steps.check_time.outputs.Run == '1'
+        run: echo "Running Job 1 tasks..."
+
+  job2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if it's time to run Job 2
+        id: check_time
+        run: |
+          CURRENT_TIME=$(date -u +"%M %H * * *")
+          echo "Current time: $CURRENT_TIME"
+          if [ "$CURRENT_TIME" = "${{ env.JOB_2_START_TIME }}" ]; then
+            echo "Run=1" >> $GITHUB_OUTPUT
+          else
+            echo "Run=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run Job 2
+        if: steps.check_time.outputs.Run == '1'
+        run: echo "Running Job 2 tasks..."
