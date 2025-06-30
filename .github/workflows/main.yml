@@ -6,8 +6,8 @@ on:
   workflow_dispatch:     # Allows manual trigger
 
 env:
-  JOB_1_START_TIME: "15 21 * * *"
-  JOB_2_START_TIME: "16 21 * * *"
+  JOB_1_START_TIME: "30 21 * * *"
+  JOB_2_START_TIME: "31 21 * * *"
 
 jobs:
   job1:
