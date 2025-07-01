@@ -2,7 +2,7 @@ name: Job 1 Scheduled Workflow
 
 on:
   schedule:
-    - cron: '* * * * *'  # Every minute
+    - cron: '0 * * * *'  # Every minute
   workflow_dispatch:
     inputs:
       TARGETTASKNAME:
