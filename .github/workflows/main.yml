@@ -1,8 +1,6 @@
 name: Three Jobs Workflow
 
 on:
-  schedule:
-    - cron: '* * * * *'  # Every minute
   workflow_dispatch:
     inputs:
       TARGETTASKNAME:
