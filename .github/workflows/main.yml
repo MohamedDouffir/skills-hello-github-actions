@@ -7,22 +7,22 @@ on:
 
 jobs:
   job1:
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
     runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
     steps:
       - name: Print UTC time for job1
         run: echo "Job1 UTC Time: $(date -u)"
 
   job2:
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
     runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
     steps:
       - name: Print UTC time for job2
         run: echo "Job2 UTC Time: $(date -u)"
 
   job3:
-    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - name: Print UTC time for job3
         run: echo "Job3 UTC Time: $(date -u)"
