@@ -16,7 +16,8 @@ jobs:
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.TARGETTASKNAME == 'job1')
     steps:
       - name: Print UTC time for job1
-        run: echo "Job1 UTC Time: $(date -u)"
+        run: |
+          echo "Job1 UTC Time: $(date -u)"
 
   job2:
     runs-on: ubuntu-latest
@@ -25,17 +26,19 @@ jobs:
       - name: Conditionally wait 15 minutes if scheduled
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
-            echo "Scheduled run: waiting 3 minutes..."
-            sleep 180
+            echo "Scheduled run: waiting 15 minutes..."
+            sleep 900
           else
             echo "Manual run: skipping wait."
           fi
       - name: Print UTC time for job2
-        run: echo "Job2 UTC Time: $(date -u)"
+        run: |
+          echo "Job2 UTC Time: $(date -u)"
 
   job3:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.TARGETTASKNAME == 'job3'
     steps:
       - name: Print UTC time for job3
-        run: echo "Job3 UTC Time: $(date -u)"
+        run: |
+          echo "Job3 UTC Time: $(date -u)"
