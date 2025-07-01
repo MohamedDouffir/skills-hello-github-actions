@@ -26,8 +26,8 @@ jobs:
       - name: Conditionally wait 15 minutes if scheduled
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
-            echo "Scheduled run: waiting 15 minutes..."
-            sleep 900
+            echo "Scheduled run: waiting 3 minutes..."
+            sleep 180
           else
             echo "Manual run: skipping wait."
           fi
