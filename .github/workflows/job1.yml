@@ -1,0 +1,21 @@
+name: Job 1 Scheduled Workflow
+
+on:
+  schedule:
+    - cron: '* * * * *'  # Every minute
+  workflow_dispatch:
+    inputs:
+      TARGETTASKNAME:
+        description: 'Name of the job to run manually (job1)'
+        required: false
+        default: ''
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.TARGETTASKNAME == 'job1')
+    steps:
+      - name: Print UTC time for job1
+        run: |
+          echo "Job1 UTC Time: $(date -u)"
+
